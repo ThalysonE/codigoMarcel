@@ -23,7 +23,7 @@ Voo* remover(Voo *raiz, int chave) {
         if(raiz->numero == chave) {
             // remove nós folhas (nós sem filhos)
             if(raiz->esquerda == NULL && raiz->direita == NULL) {
-                printf("Removendo o Voo: Numero: %d, Origem: %s, Destino: %s",raiz->numero, raiz->origem, raiz->destino);
+                printf("O seguinte voo sera removido: Numero: %d, Origem: %s, Destino: %s",raiz->numero, raiz->origem, raiz->destino);
                 free(raiz);
                 return NULL;
             }
@@ -75,6 +75,14 @@ void imprimirVoos(Voo *raiz) {
         imprimirVoos(raiz->direita);
     }
 }
+//7 - Implemente uma função para contar o número total de voos disponíveis.
+int quantidadeVoos(Voo *raiz){
+    if(raiz == NULL)
+        return 0;
+    else
+        return  1 + tamanho(raiz->esquerda) + tamanho(raiz->direita);
+}
+
 //10 - O código deve implementar uma maneira de exibir a árvore de maneira intuitiva no console.
 void imprimirArvore(Voo* raiz, int espacos) {
     if (raiz == NULL) {
@@ -95,7 +103,7 @@ void imprimirArvore(Voo* raiz, int espacos) {
 }
 
 int main(){
-    Voo *raiz=NULL;
+    Voo *raiz = NULL;
     int op,chave;
     char origem[20],destino[20];
     
@@ -133,7 +141,7 @@ int main(){
                     printf("\n A raiz não possui nenhum valor");
                 break;
             case 6:
-                //falta inserir
+                printf("\n Quantidade de voos disponiveis: %d", quantidadeVoos(raiz);
                 break;
             case 7:
                 imprimirArvore(raiz,5);
