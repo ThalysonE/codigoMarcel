@@ -141,7 +141,9 @@ Voo* inserir(Voo *raiz, int x, char *origem, char *destino,char *data, char *hor
     if(raiz == NULL) // árvore vazia
         return novoNo(x, origem, destino, data, horario, dataValor, numeroAssentos);
     else{ // inserção será à esquerda ou à direita
-        if(x < raiz->numero)
+        if (numeroAssentos < 0)
+            printf("\nInsercao nao realizada!\nO numero de assentos eh menor que zero!\n");
+        else if(x < raiz->numero)
             raiz->esquerda = inserir(raiz->esquerda, x, origem, destino,data, horario, dataValor, numeroAssentos);
         else if(x > raiz->numero)
             raiz->direita = inserir(raiz->direita, x, origem, destino,data, horario, dataValor, numeroAssentos);
