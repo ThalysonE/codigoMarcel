@@ -1,14 +1,15 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 // 1 - Cada nó da árvore deve representar um voo, contendo os seguintes campos: número do voo, origem, destino, data, horário, número de assentos disponíveis.
 typedef struct voo{
-    int numVoo;
+    int numero;
     char origem[30];
     char destino[30];
     char data[10];
     int horario; // numero de quatro digitos
-    int numAssentos;
+    int numeroAssentos;
     struct voo *esquerda,*direita
     short altura;
 } Voo;
@@ -28,9 +29,9 @@ Voo* remover(Voo *raiz, int chave) {
             }
             else{
                 // remover nós que possuem 2 filhos
-                if(raiz->esquerdA != NULL && raiz->direita != NULL){
+                if(raiz->esquerda != NULL && raiz->direita != NULL){
                     Voo *aux = raiz->esquerda;
-                    while(aux->direito != NULL)
+                    while(aux->direita != NULL)
                         aux = aux->direita;
                     raiz->numero = aux->numero;
                     strcpy(raiz->origem,aux->origem); //atualiza a string
@@ -46,7 +47,7 @@ Voo* remover(Voo *raiz, int chave) {
                 else{
                     // remover nós que possuem apenas 1 filho
                     Voo *aux;
-                    if(raiz->esquerdo != NULL)
+                    if(raiz->esquerda != NULL)
                         aux = raiz->esquerda;
                     else
                         aux = raiz->direita;
@@ -69,7 +70,7 @@ Voo* remover(Voo *raiz, int chave) {
 void imprimirVoos(Voo *raiz) {
     if (raiz != NULL) {
         if (raiz->numeroAssentos < 10)
-            printf("Numero: %d, Origem: %s, Destino: %s, Data: %s, Horario: %d", raiz->numero, raiz->origem,raiz->destino, raiz->data, raiz->horario); //aqui tbm precisa mudar a forma da data
+            printf("\nNumero: %d, Origem: %s, Destino: %s, Data: %s, Horario: %d\n", raiz->numero, raiz->origem,raiz->destino, raiz->data, raiz->horario); //aqui tbm precisa mudar a forma da data
         imprimirVoos(raiz->esquerda);
         imprimirVoos(raiz->direita);
     }
@@ -91,4 +92,55 @@ void imprimirArvore(Voo* raiz, int espacos) {
     printf("%d - Destino: %s\n", raiz->numero, raiz->destino);
 
     imprimirArvore(raiz->esquerda, espacos);
+}
+
+int main(){
+    Voo *raiz=NULL;
+    int op,chave;
+    char origem[20],destino[20];
+    
+    
+    //Menu do codigo
+    do{
+        printf("\n0 - Sair\n1 - Inserir\n2 - Remover\n3 -Buscar Voo\n4 - Listar todos voos com assentos disponiveis\n5 - Listar todsos os voos com menos de 10 assentos\n6 - Numero total de voos disponiveis\n7 - Geração de uma arvore balanceada aleatória\n8 - Exibicao da arvore\n");
+        scanf("%d",&op);
+        switch (op) {
+            case 0:
+                printf("\nSaindo...\n");
+                break;
+            case 1:
+                //incluir os dados da funcao inserir
+                break;
+            case 2:
+                printf("\nDigite o numero do voo a ser apagado: ");
+                scanf("%d",&chave);
+                remover(raiz,chave);
+                break;
+            case 3:
+                printf("\nDigite o a origem da viagem: ");
+                scanf("%s",origem);
+                printf("\nDigite o destino da viagem: ");
+                scanf("%s",destino);
+                printf("\nDigite a data da viajem: "); //alterar pra nova forma da data e adicionar o scanf
+                break;
+            case 4:
+            // falta implementar
+                break;
+            case 5:
+                if(raiz != NULL)
+                    imprimirVoos(raiz);
+                else
+                    printf("\n A raiz não possui nenhum valor");
+                break;
+            case 6:
+                //falta inserir
+                break;
+            case 7:
+                imprimirArvore(raiz,5);
+                break;
+            default:
+                printf("\nOpcao invalida!");
+                break;
+        }
+    }while(op != 0);
 }
