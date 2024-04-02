@@ -251,6 +251,82 @@ int tamanho(Voo *raiz){
     else
         return  1 + tamanho(raiz->esquerda) + tamanho(raiz->direita);
 }
+
+void limparArvore(Voo *raiz) {
+    if (raiz != NULL) {
+        limparArvore(raiz->esquerda);
+        limparArvore(raiz->direita);
+        free(raiz);
+    }
+}
+
+
+void gerarArvoreAleatoria(Voo **raiz) {
+    // Excluir árvore anterior, se existir
+    if (*raiz != NULL) {
+        printf("Excluindo arvore anterior...\n");
+        limparArvore(*raiz);
+        *raiz = NULL;
+    }
+    // Aqui predefino alguns valores para os atributos de Voo
+    int numeros[50] = {1, 2, 3, 4, 5, 6, 7};
+    char origens[7][30] = {"Sao Paulo", "Rio de Janeiro", "Salvador", "Brasilia", "Fortaleza","Belo Horizonte", "Manaus"};
+    char destinos[7][20] = {"Curitiba", "Recife", "Goiania","Belem", "Porto Alegre", "Sao Luis", "Campinas"};
+    char datas[7][11] = {"2024-04-01", "2024-04-02", "2024-04-03", "2024-04-04", "2024-04-05", "2024-04-06", "2024-04-07"};
+    char horarios[7][9] = {"08:00:00", "09:00:00", "10:00:00", "11:00:00", "12:00:00", "13:00:00", "14:00:00"};
+    int assentos[7] = {150, 200, 100, 120, 180, 220, 170};
+
+    // Inicializar a semente para a função rand()
+    srand(time(NULL));
+
+    // Inserir os elementos aleatórios na árvore
+    for (int i = 0; i < 7; i++) {
+        // Gerar números de voo aleatórios entre 1 e 1000
+        int numero = numeros[i] + rand() % 100;
+        int origemIndex = rand() % 7;
+        int destinoIndex = rand() % 7;
+        int dataIndex = rand() % 7;
+        int horarioIndex = rand() % 7;
+        int assentos = 50 + rand() % 251;
+
+        // Inserir o voo na árvore
+        *raiz = inserir(*raiz, numero, origens[origemIndex], destinos[destinoIndex], datas[dataIndex], horarios[horarioIndex], 0, assentos);
+    }
+
+    printf("Arvore binaria aleatoria gerada com sucesso!\n");
+}
+
+void listarVoosComAssentosDisponiveis(Voo *raiz) {
+    if (raiz != NULL) {
+        listarVoosComAssentosDisponiveis(raiz->esquerda);
+
+        if (raiz->numeroAssentos > 0) {
+            printf("Numero: %d, Origem: %s, Destino: %s, Data: %s, Horario: %s, Numero de Assentos: %d\n", raiz->numero, raiz->origem, raiz->destino, raiz->data, raiz->horario, raiz->numeroAssentos);
+        }
+
+        listarVoosComAssentosDisponiveis(raiz->direita);
+    }
+}
+
+void buscarVoosDisponiveis(Voo *raiz, char *origem, char *destino, char *data) {
+    if (raiz != NULL) {
+        // Verifica se o voo tem origem, destino e data correspondentes
+        if (strcmp(raiz->origem, origem) == 0 && strcmp(raiz->destino, destino) == 0 && strcmp(raiz->data, data) == 0) {
+            // Verifica se há assentos disponíveis
+            if (raiz->numeroAssentos > 0) {
+                printf("Numero: %d, Origem: %s, Destino: %s, Data: %s, Horario: %s, Numero de Assentos: %d\n", raiz->numero, raiz->origem, raiz->destino, raiz->data, raiz->horario, raiz->numeroAssentos);
+            } else {
+                printf("Voo encontrado, mas não há assentos disponíveis.\n");
+            }
+        }
+
+        // Busca nos filhos da esquerda e direita
+        buscarVoosDisponiveis(raiz->esquerda, origem, destino, data);
+        buscarVoosDisponiveis(raiz->direita, origem, destino, data);
+    }
+}
+
+
 int main(){
     Voo *raiz=NULL;
     int op,chave;
@@ -264,7 +340,7 @@ int main(){
 
     //Menu do codigo
     do{
-        printf("\n0 - Sair\n1 - Inserir\n2 - Remover\n3 - Buscar Voo\n4 - Listar todos voos com assentos disponiveis\n5 - Listar todos os voos com menos de 10 assentos\n6 - Quantidade total de voos disponiveis\n7 - Geracao de uma arvore balanceada aleatoria\n8 - Exibicao da arvore\n");
+        printf("\n0 - Sair\n1 - Inserir\n2 - Remover\n3 - Buscar Voo\n4 - Listar todos voos com assentos disponiveis\n5 - Listar todos os voos com menos de 10 assentos\n6 - Quantidade total de voos disponiveis\n7 - Geracao de uma arvore balanceada aleatoria\n8 - Exibicao da arvore\n9 - Exibir Voos com assentos disponiveis ordenados crescentemente com base na data e hora\n");
         scanf("%d",&op);
         switch (op) {
             case 0:
@@ -311,15 +387,18 @@ int main(){
                 scanf("%d",&chave);
                 remover(raiz,chave);
                 break;
-            case 3:
-                printf("\nDigite o a origem da viagem: ");
-                scanf(" %s",origem);
+           case 3:
+                printf("\nDigite a origem da viagem: ");
+                scanf("%s", origem);
                 printf("\nDigite o destino da viagem: ");
-                scanf(" %s",destino);
-                printf("\nDigite a data da viajem: "); //alterar pra nova forma da data e adicionar o scanf
+                scanf("%s", destino);
+                printf("\nDigite a data da viagem (AAAA-MM-DD): ");
+                scanf("%s", data);
+                printf("\nVoos disponiveis com base na origem, destino e data:\n");
+                buscarVoosDisponiveis(raiz, origem, destino, data);
                 break;
             case 4:
-            // falta implementar
+                listarVoosComAssentosDisponiveis(raiz);
                 break;
             case 5:
                 if(raiz != NULL)
@@ -331,13 +410,16 @@ int main(){
                 printf("A quantidade de voos disponiveis: %d",tamanho(raiz));
                 break;
             case 7:
-                //falta implementar
+                gerarArvoreAleatoria(&raiz);
                 break;
             case 8:
                 if(raiz != NULL)
                     imprimirArvore(raiz,8);
                 else
                     printf("A raiz nao possui valor!\n");
+                break;
+            case 9:
+                // Falta implementar
                 break;
             default:
                 printf("\nOpcao invalida!");
