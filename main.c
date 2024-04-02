@@ -260,7 +260,7 @@ void limparArvore(Voo *raiz) {
     }
 }
 
-
+// 9 - Implementar uma maneira de criar uma arvore aleatória com 7 elementos
 void gerarArvoreAleatoria(Voo **raiz) {
     // Excluir árvore anterior, se existir
     if (*raiz != NULL) {
@@ -296,6 +296,7 @@ void gerarArvoreAleatoria(Voo **raiz) {
     printf("Arvore binaria aleatoria gerada com sucesso!\n");
 }
 
+// Função temporária de buscar voos com assentos disponiveis
 void listarVoosComAssentosDisponiveis(Voo *raiz) {
     if (raiz != NULL) {
         listarVoosComAssentosDisponiveis(raiz->esquerda);
@@ -308,6 +309,7 @@ void listarVoosComAssentosDisponiveis(Voo *raiz) {
     }
 }
 
+// 4- Buscar voos com base na origem, destino e data
 void buscarVoosDisponiveis(Voo *raiz, char *origem, char *destino, char *data) {
     if (raiz != NULL) {
         // Verifica se o voo tem origem, destino e data correspondentes
