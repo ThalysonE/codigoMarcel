@@ -290,9 +290,7 @@ int main(){
                 strcat(temp, " ");
                 strcat(temp, horario);
                 printf("\n%s",temp);
-
-
-                // transforma a data e hora em um inteiro
+                //tranfoma a data e hora e inteiro
                 sscanf(temp, "%d-%d-%d %d:%d:%d",
                        &date.tm_year, &date.tm_mon, &date.tm_mday,
                        &date.tm_hour, &date.tm_min, &date.tm_sec);
@@ -301,7 +299,7 @@ int main(){
                 date.tm_year -= 1900; // tm_year conta os anos desde 1900
 
                 time_t tempo = mktime(&date);
-                dataValor = (long)tempo;
+                dataValor = (long)tempo; 
 
                 //realiza a ação de insersão
                 raiz = inserir(raiz, numero, origem, destino,data, horario,dataValor,numeroAssentos);
