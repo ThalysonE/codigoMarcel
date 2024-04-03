@@ -328,6 +328,64 @@ void buscarVoosDisponiveis(Voo *raiz, char *origem, char *destino, char *data) {
     }
 }
 
+// Função para converter a data e horário em um valor numérico
+long int valorDataHora(char *data, char *horario) {
+    struct tm tm_time;
+    time_t timestamp;
+    memset(&tm_time, 0, sizeof(struct tm));
+
+    sscanf(data, "%d-%d-%d", &tm_time.tm_year, &tm_time.tm_mon, &tm_time.tm_mday);
+    sscanf(horario, "%d:%d:%d", &tm_time.tm_hour, &tm_time.tm_min, &tm_time.tm_sec);
+    tm_time.tm_year -= 1900;
+    tm_time.tm_mon -= 1;
+    tm_time.tm_isdst = -1;
+
+    timestamp = mktime(&tm_time);
+    return (long int)timestamp;
+}
+
+// Função auxiliar para criar e ordenar uma lista de voos disponíveis
+void criarEOrdenarListaVoosDisponiveis(Voo *raiz, Voo *voosDisponiveis[], int *indice) {
+    if (raiz != NULL) {
+        if (raiz->numeroAssentos > 0) {
+            voosDisponiveis[*indice] = raiz;
+            (*indice)++;
+        }
+        criarEOrdenarListaVoosDisponiveis(raiz->esquerda, voosDisponiveis, indice);
+
+        criarEOrdenarListaVoosDisponiveis(raiz->direita, voosDisponiveis, indice);
+    }
+}
+
+// 5 - Função para listar todos os voos com assentos disponíveis e ordená-los em ordem crescente de data e hora
+void listarVoosDisponiveisOrdenados(Voo *raiz) {
+    if (raiz == NULL) {
+        return;
+    }
+
+    Voo *voosDisponiveis[tamanho(raiz)];
+    int indice = 0;
+    criarEOrdenarListaVoosDisponiveis(raiz, voosDisponiveis, &indice);
+
+    for (int i = 0; i < indice - 1; i++) {
+        for (int j = i + 1; j < indice; j++) {
+            long int valorDataHora1 = valorDataHora(voosDisponiveis[i]->data, voosDisponiveis[i]->horario);
+            long int valorDataHora2 = valorDataHora(voosDisponiveis[j]->data, voosDisponiveis[j]->horario);
+            if (valorDataHora1 > valorDataHora2) {
+                Voo *temp = voosDisponiveis[i];
+                voosDisponiveis[i] = voosDisponiveis[j];
+                voosDisponiveis[j] = temp;
+            }
+        }
+    }
+    // Imprimir voos disponíveis ordenados
+    for (int i = 0; i < indice; i++) {
+        printf("Numero: %d, Origem: %s, Destino: %s, Data: %s, Horario: %s, Numero de Assentos: %d\n",
+               voosDisponiveis[i]->numero, voosDisponiveis[i]->origem, voosDisponiveis[i]->destino,
+               voosDisponiveis[i]->data, voosDisponiveis[i]->horario, voosDisponiveis[i]->numeroAssentos);
+    }
+}
+
 
 int main(){
     Voo *raiz=NULL;
@@ -342,7 +400,7 @@ int main(){
 
     //Menu do codigo
     do{
-        printf("\n0 - Sair\n1 - Inserir\n2 - Remover\n3 - Buscar Voo\n4 - Listar todos voos com assentos disponiveis\n5 - Listar todos os voos com menos de 10 assentos\n6 - Quantidade total de voos disponiveis\n7 - Geracao de uma arvore balanceada aleatoria\n8 - Exibicao da arvore\n9 - Exibir Voos com assentos disponiveis ordenados crescentemente com base na data e hora\n");
+        printf("\n0 - Sair\n1 - Inserir\n2 - Remover\n3 - Buscar Voo\n4 - Exibir Voos com assentos disponiveis ordenados crescentemente com base na data e hora\n5 - Listar todos os voos com menos de 10 assentos\n6 - Quantidade total de voos disponiveis\n7 - Geracao de uma arvore balanceada aleatoria\n8 - Exibicao da arvore\n");
         scanf("%d",&op);
         switch (op) {
             case 0:
@@ -400,7 +458,7 @@ int main(){
                 buscarVoosDisponiveis(raiz, origem, destino, data);
                 break;
             case 4:
-                listarVoosComAssentosDisponiveis(raiz);
+                listarVoosDisponiveisOrdenados(raiz);
                 break;
             case 5:
                 if(raiz != NULL)
@@ -420,12 +478,8 @@ int main(){
                 else
                     printf("A raiz nao possui valor!\n");
                 break;
-            case 9:
-                // Falta implementar
-                break;
             default:
                 printf("\nOpcao invalida!");
-                break;
         }
     }while(op != 0);
 }
