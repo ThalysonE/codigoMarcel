@@ -296,19 +296,6 @@ void gerarArvoreAleatoria(Voo **raiz) {
     printf("Arvore binaria aleatoria gerada com sucesso!\n");
 }
 
-// Função temporária de buscar voos com assentos disponiveis
-void listarVoosComAssentosDisponiveis(Voo *raiz) {
-    if (raiz != NULL) {
-        listarVoosComAssentosDisponiveis(raiz->esquerda);
-
-        if (raiz->numeroAssentos > 0) {
-            printf("Numero: %d, Origem: %s, Destino: %s, Data: %s, Horario: %s, Numero de Assentos: %d\n", raiz->numero, raiz->origem, raiz->destino, raiz->data, raiz->horario, raiz->numeroAssentos);
-        }
-
-        listarVoosComAssentosDisponiveis(raiz->direita);
-    }
-}
-
 // 4- Buscar voos com base na origem, destino e data
 void buscarVoosDisponiveis(Voo *raiz, char *origem, char *destino, char *data) {
     if (raiz != NULL) {
@@ -386,6 +373,21 @@ void listarVoosDisponiveisOrdenados(Voo *raiz) {
     }
 }
 
+// Imprimir arvore somente número do Voo
+void imprimir(Voo *raiz, int nivel){
+    int i;
+    if(raiz){
+        imprimir(raiz->direita, nivel + 1);
+        printf("\n\n");
+
+        for(i = 0; i < nivel; i++)
+            printf("\t");
+
+        printf("%d", raiz->numero);
+        imprimir(raiz->esquerda, nivel + 1);
+    }
+}
+
 
 int main(){
     Voo *raiz=NULL;
@@ -400,7 +402,7 @@ int main(){
 
     //Menu do codigo
     do{
-        printf("\n0 - Sair\n1 - Inserir\n2 - Remover\n3 - Buscar Voo\n4 - Exibir Voos com assentos disponiveis ordenados crescentemente com base na data e hora\n5 - Listar todos os voos com menos de 10 assentos\n6 - Quantidade total de voos disponiveis\n7 - Geracao de uma arvore balanceada aleatoria\n8 - Exibicao da arvore\n");
+        printf("\n0 - Sair\n1 - Inserir\n2 - Remover\n3 - Buscar Voo\n4 - Exibir Voos com assentos disponiveis ordenados crescentemente com base na data e hora\n5 - Listar todos os voos com menos de 10 assentos\n6 - Quantidade total de voos disponiveis\n7 - Geracao de uma arvore balanceada aleatoria\n8 - Exibicao da arvore(detalhada: numero, origem, destino)\n9 - Exibicao da arvore(somente numero)\n");
         scanf("%d",&op);
         switch (op) {
             case 0:
@@ -477,6 +479,13 @@ int main(){
                     imprimirArvore(raiz,8);
                 else
                     printf("A raiz nao possui valor!\n");
+                break;
+            case 9:
+                if(raiz != NULL)
+                    imprimir(raiz,1);
+                else
+                    printf("A raiz nao possui valor!\n");
+                break;
                 break;
             default:
                 printf("\nOpcao invalida!");
